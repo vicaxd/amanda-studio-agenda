@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Meus horários · Amanda Rodrigues</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f9e8f9">
+<link rel="stylesheet" href="css/agenda.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="./">Amanda <em>Rodrigues</em></a><a class="lnk" href="agendar.html">+ Novo horário</a></header>
+<div id="demo"></div>
+<main class="card"><div id="v" aria-live="polite"></div></main>
+<script src="js/config.js"></script>
+<script src="js/agenda.js"></script>
+<script>
+(function(){
+var A=Agenda,D=document,v=D.getElementById("v"),e=A.esc;
+var S={tel:"",cod:"",lista:null,carregando:false,erro:""};
+if(A.demo)D.getElementById("demo").innerHTML='<div class="demo">🧪 <b>Modo demonstração.</b> Pra testar: (51) 97777-2222 com o código 7350, ou (51) 98888-1111 com 4821.</div>';
+var TXT={pendente:"Aguardando a Amanda",confirmado:"Confirmado ✓",proposta:"Amanda sugeriu outro horário",conversar:"Combinar pelo WhatsApp",recusado:"Não foi possível atender",cancelado:"Cancelado"};
+function render(){var h="";
+ if(!S.lista){
+  h='<h1 class="t2">Meus <em>horários</em></h1><p class="sub">Use o WhatsApp e o código de 4 números que você recebeu ao pedir o horário.</p>'+
+  '<form id="lg"><label>WhatsApp<input name="t" required inputmode="tel" autocomplete="tel" value="'+e(S.tel)+'" placeholder="(51) 90000-0000"></label><label>Código<input name="c" required inputmode="numeric" maxlength="4" value="'+e(S.cod)+'" placeholder="0000"></label>'+
+  (S.erro?'<div class="warn">'+e(S.erro)+'</div>':'')+'<button class="b"'+(S.carregando?" disabled":"")+'>'+(S.carregando?"Buscando…":"Ver meus horários")+'</button></form>'}
+ else{
+  h='<h1 class="t2">Olá, <em>'+e(S.lista[0].nome)+'!</em></h1><p class="sub">Teus horários com a Amanda:</p><div class="my">'+S.lista.map(function(p){
+   var s='<div class="myc"><span><span class="badge '+p.status+'">'+(TXT[p.status]||p.status)+'</span></span><b>'+e(A.rot(p.itens))+'</b>';
+   if(p.status==="proposta")s+='<span><s>'+A.dt(p.data)+' · '+p.hora+'</s><br>Nova sugestão: <b style="font:inherit;font-weight:500">'+A.dt(p.sdata)+' · '+p.shora+'</b></span><button class="b" data-ac="'+p.id+'">Aceitar novo horário</button><button class="b o" data-cv="'+p.id+'">Prefiro conversar com a Amanda</button>';
+   else s+='<span>'+(p.data?A.dt(p.data)+' · '+p.hora:'')+'</span>';
+   if(p.status==="confirmado")s+='<span style="font-size:14px;color:var(--pl2)">📍 Rua Peri, 3475</span>';
+   return s+'</div>'}).join("")+'</div>'+(S.erro?'<div class="warn">'+e(S.erro)+'</div>':'')+'<button class="back" data-sair>← Sair</button>'}
+ v.innerHTML=h}
+function entrar(){S.carregando=true;S.erro="";render();
+ A.api("meus",{tel:S.tel,cod:S.cod}).then(function(r){S.carregando=false;if(!r.pedidos){S.erro="WhatsApp ou código não conferem. Confere o código que veio no WhatsApp.";S.lista=null}else S.lista=r.pedidos;render()})
+ .catch(function(err){S.carregando=false;S.erro=err.message;render()})}
+v.addEventListener("submit",function(ev){ev.preventDefault();S.tel=ev.target.t.value;S.cod=ev.target.c.value.trim();entrar()});
+v.addEventListener("click",function(ev){var t=ev.target.closest("button");if(!t||t.closest("form"))return;
+ if(t.hasAttribute("data-sair")){S.lista=null;S.cod="";history.replaceState(null,"","meus.html");return render()}
+ var id=t.dataset.ac||t.dataset.cv;if(!id)return;t.disabled=true;
+ A.api(t.dataset.ac?"aceitar":"conversar",{id:id,tel:S.tel,cod:S.cod}).then(function(){
+  if(t.dataset.cv)window.open(A.wa(A.CFG.WHATS,"Oi, Amanda! O horário sugerido não fica bom pra mim. Podemos ver outro? 🩷"),"_blank");entrar()})
+ .catch(function(err){S.erro=err.message;render()})});
+/* link do WhatsApp: meus.html?t=51999990000&c=1234 entra direto */
+var q=new URLSearchParams(location.search);if(q.get("t")&&q.get("c")){S.tel=q.get("t");S.cod=q.get("c");entrar()}else render();
+})();
+</script>
+</body>
+</html>

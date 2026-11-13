@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Agendar horário · Amanda Rodrigues</title>
+<meta name="description" content="Escolha a técnica, o dia e o horário no Studio Amanda Rodrigues.">
+<meta name="theme-color" content="#f9e8f9">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="css/agenda.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-2.9-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.5 1 2.7.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></symbol></svg>
+<header class="top"><a class="brand" href="./">Amanda <em>Rodrigues</em></a><a class="lnk" href="meus.html">👤 Meus horários</a></header>
+<div id="demo"></div>
+<main class="card"><div class="steps"><i></i><i></i><i></i><i></i></div><div id="v" aria-live="polite"></div></main>
+<p class="foot">Prefere falar direto? <a id="wadir" href="#" target="_blank" rel="noopener">Chama a Amanda no WhatsApp</a></p>
+<script src="js/config.js"></script>
+<script src="js/agenda.js"></script>
+<script>
+(function(){
+var A=Agenda,D=document,v=D.getElementById("v"),DUR={col:120,man:105,sob:45};
+var S={p:0,cil:null,ct:null,sob:null,dias:null,dia:null,hora:null,carregando:false,erro:"",res:null};
+D.getElementById("wadir").href=A.wa(A.CFG.WHATS,"Oi, Amanda! Vim pelo teu site 🩷");
+if(A.demo)D.getElementById("demo").innerHTML='<div class="demo">🧪 <b>Modo demonstração:</b> os horários são de exemplo e nada é enviado de verdade.</div>';
+/* técnica vinda do catálogo: agendar.html?tec=Fox%20eyes */
+var q=new URLSearchParams(location.search).get("tec");
+if(q){if(A.TEC.cilios.indexOf(q)>=0)S.cil=q;else if(A.TEC.sobrancelhas.indexOf(q)>=0)S.sob=q}
+function itens(){var a=[];if(S.cil&&S.ct)a.push({tec:S.cil,tipo:S.ct});if(S.sob)a.push({tec:S.sob,tipo:"sob"});return a}
+function min(){return itens().reduce(function(t,i){return t+DUR[i.tipo]},0)}
+function passos(){D.querySelectorAll(".steps i").forEach(function(x,k){x.classList.toggle("on",k<=S.p)})}
+function e(s){return A.esc(s)}
+function render(){passos();var h="";
+ if(S.p===0){var it=itens();
+  h='<h1 class="t2">O que você <em>vai fazer?</em></h1><p class="sub">Pode escolher cílios, sobrancelha ou os dois juntos 🩷</p>';
+  h+='<div class="grp">Cílios</div><div class="chips">'+A.TEC.cilios.map(function(t){return'<button class="chip'+(S.cil===t?" on":"")+'" data-cil="'+e(t)+'">'+e(t)+'</button>'}).join("")+'</div>';
+  if(S.cil)h+='<div class="tipo"><button class="tp'+(S.ct==="col"?" on":"")+'" data-ct="col"><b>1ª colocação</b><small>cerca de '+A.dur(DUR.col)+'</small></button><button class="tp'+(S.ct==="man"?" on":"")+'" data-ct="man"><b>Manutenção</b><small>cerca de '+A.dur(DUR.man)+'</small></button></div>';
+  h+='<div class="grp">Sobrancelhas</div><div class="chips">'+A.TEC.sobrancelhas.map(function(t){return'<button class="chip'+(S.sob===t?" on":"")+'" data-sob="'+e(t)+'">'+e(t)+'</button>'}).join("")+'</div>';
+  if(S.cil&&!S.ct)h+='<div class="hint">Escolha se é <b>1ª colocação</b> ou <b>manutenção</b> 👆</div>';
+  if(it.length)h+='<div class="sum" style="margin-top:20px"><span>Teu atendimento'+(it.length>1?" (combo)":"")+':</span><b>'+e(A.rot(it))+'</b><span>cerca de '+A.dur(min())+'</span></div><button class="b" style="margin-top:12px" data-go>Escolher dia e horário →</button>'}
+ if(S.p===1){
+  h='<h1 class="t2">Escolha o <em>dia e horário</em></h1><p class="sub">'+e(A.rot(itens()))+' · '+A.dur(min())+'</p>';
+  if(S.carregando)h+='<div class="load">Buscando horários livres…</div>';
+  else if(S.erro)h+='<div class="warn">'+e(S.erro)+'</div><button class="b o" style="margin-top:12px" data-retry>Tentar de novo</button>';
+  else{var ds=S.dias||[],abertos=ds.filter(function(d){return d.horarios.length});
+   if(!abertos.length)h+='<div class="none">Não há horários livres nas próximas semanas. Chama a Amanda no WhatsApp 🩷</div>';
+   else{if(!S.dia||!ds.some(function(d){return d.data===S.dia&&d.horarios.length}))S.dia=abertos[0].data;
+    h+='<div class="days">'+ds.filter(function(d){return [0,1].indexOf(d.semana)<0||d.horarios.length}).map(function(d){var x=A.parse(d.data);return'<button class="dy'+(d.data===S.dia?" on":"")+'" data-d="'+d.data+'"'+(d.horarios.length?"":" disabled")+'><small>'+A.DS[x.getDay()]+'</small><b>'+x.getDate()+'</b><em>'+A.MN[x.getMonth()]+'</em></button>'}).join("")+'</div>';
+    var dd=ds.find(function(d){return d.data===S.dia});
+    h+='<div class="slots">'+dd.horarios.map(function(m){return'<button class="sl" data-h="'+m+'">'+m+'</button>'}).join("")+'</div><p class="sub" style="margin-top:12px;font-size:13px">Só aparecem os horários livres.</p>'}}
+  h+='<button class="back" data-back>← Trocar técnica</button>'}
+ if(S.p===2){var F=S.f||{},fim=A.hm(A.amin(S.hora)+min());
+  h='<h1 class="t2">Seus <em>dados</em></h1><div class="sum"><span>'+e(A.rot(itens()))+'</span><b>'+A.dt(S.dia)+' · '+S.hora+' às '+fim+'</b></div>'+
+  '<form id="fm"><label>Nome<input name="n" required maxlength="60" autocomplete="given-name" value="'+e(F.nome||"")+'"></label><label>WhatsApp<input name="t" required inputmode="tel" autocomplete="tel" placeholder="(51) 90000-0000" value="'+e(F.tel||"")+'"></label>'+
+  '<label><span>Observação <span style="text-transform:none;letter-spacing:0">(opcional)</span></span><textarea name="o" rows="3" maxlength="300" placeholder="Ex.: é minha primeira vez, tenho alergia a algum produto, quero um efeito mais natural…">'+e(F.obs||"")+'</textarea></label>'+
+  (S.erro?'<div class="warn">'+e(S.erro)+'</div>':'')+'<button class="b"'+(S.carregando?" disabled":"")+'>'+(S.carregando?"Reservando…":"Reservar horário")+'</button></form>'+
+  '<p class="sub" style="margin-top:10px;font-size:13px">O horário fica reservado até a Amanda confirmar pelo WhatsApp.</p><button class="back" data-back>← Trocar horário</button>'}
+ if(S.p===3){var r=S.res;
+  h='<div class="status"><div class="ic">🩷</div><h1 class="t2">Horário <em>reservado!</em></h1><div class="sum"><span>'+e(A.rot(r.itens))+'</span><b>'+A.dt(r.data)+' · '+r.hora+'</b><span><span class="badge pendente">Aguardando a Amanda confirmar</span></span></div>'+
+  '<p><b>Último passo:</b> manda o pedido pra Amanda no WhatsApp. A mensagem já vai pronta, é só tocar em enviar.</p>'+
+  '<a class="b wa" style="margin-top:16px" href="'+A.wa(A.CFG.WHATS,A.MSG.pedido(r))+'" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Enviar pedido no WhatsApp</a>'+
+  '<p style="margin-top:18px">Teu código pra acompanhar em <b>Meus horários</b>:</p><div class="code">'+r.cod+'</div>'+
+  '<a class="b o" style="margin-top:18px" href="'+A.linkMeus(r.tel,r.cod).replace(A.CFG.SITE||"","")+'">Ver meus horários</a></div>'}
+ v.innerHTML=h}
+function buscar(){S.carregando=true;S.erro="";render();
+ A.api("horarios",{itens:itens()}).then(function(r){S.dias=r.dias;S.carregando=false;render()}).catch(function(err){S.carregando=false;S.erro="Não consegui carregar os horários. "+err.message;render()})}
+v.addEventListener("click",function(ev){var t=ev.target.closest("button");if(!t||t.closest("form"))return;
+ if(t.dataset.cil){S.cil=S.cil===t.dataset.cil?null:t.dataset.cil;if(!S.cil)S.ct=null}
+ else if(t.dataset.ct)S.ct=t.dataset.ct;
+ else if(t.dataset.sob)S.sob=S.sob===t.dataset.sob?null:t.dataset.sob;
+ else if(t.hasAttribute("data-go")){S.p=1;S.dia=null;scrollTo(0,0);return buscar()}
+ else if(t.hasAttribute("data-retry"))return buscar();
+ else if(t.dataset.d)S.dia=t.dataset.d;
+ else if(t.dataset.h){S.hora=t.dataset.h;S.p=2;S.erro="";scrollTo(0,0)}
+ else if(t.hasAttribute("data-back")){S.erro="";S.p--;if(S.p===1)return buscar()}
+ else return;render()});
+v.addEventListener("submit",function(ev){ev.preventDefault();var f=ev.target;if(S.carregando)return;
+ var dados={nome:f.n.value.trim(),tel:f.t.value,obs:f.o.value.trim(),itens:itens(),data:S.dia,hora:S.hora};
+ S.f=dados;if(A.dig(dados.tel).length<10){S.erro="Confere o WhatsApp com DDD, por favor.";return render()}
+ S.carregando=true;S.erro="";render();
+ A.api("pedir",dados).then(function(r){S.carregando=false;S.res=Object.assign({},dados,{tel:A.dig(dados.tel),cod:r.cod,id:r.id});S.p=3;render();scrollTo(0,0)})
+ .catch(function(err){S.carregando=false;S.erro=err.message;render()})});
+render();
+})();
+</script>
+</body>
+</html>
