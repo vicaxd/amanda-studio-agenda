@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Painel · Amanda Rodrigues</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#600048">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Painel Amanda">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icone.png">
+<link rel="apple-touch-icon" href="icone.png">
+<style>
+@font-face{font-family:"Marcellus";font-display:swap;src:url(fonts/marcellus-latin.woff2) format("woff2")}
+@font-face{font-family:"Instrument Serif";font-style:normal;font-display:swap;src:url(fonts/instrument-serif-normal.woff2) format("woff2")}
+@font-face{font-family:"Instrument Serif";font-style:italic;font-display:swap;src:url(fonts/instrument-serif-italic.woff2) format("woff2")}
+@font-face{font-family:"Inter Tight";font-weight:300 600;font-display:swap;src:url(fonts/inter-tight-latin.woff2) format("woff2")}
+:root{--wh:#fff;--bg:#f6f2f6;--li:#f3d1f4;--li2:#f9e8f9;--pl:#600048;--pl2:#8a4f7d;--mu:#9b6b8f;--line:rgba(96,0,72,.13);--gr:#eceaee;--grt:#5f5963;--ok:#1f7a4d;--okb:#e3f4ea;--sf:"Instrument Serif",Georgia,serif;--mf:"Marcellus",Georgia,serif;--ss:"Inter Tight",system-ui,-apple-system,"Segoe UI",sans-serif}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--pl);font:300 15px/1.5 var(--ss);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:2px solid var(--pl);outline-offset:2px}
+.hd{position:sticky;top:0;z-index:5;background:var(--pl);color:#fff;padding:calc(12px + env(safe-area-inset-top,0px)) 18px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hd .t{font:400 14px/1 var(--mf);letter-spacing:.12em;text-transform:uppercase}
+.hd .t small{display:block;font:300 11px/1.4 var(--ss);letter-spacing:.14em;color:var(--li);margin-top:3px}
+.hd .bt{display:flex;gap:6px}
+.hd button{background:rgba(255,255,255,.12);border:0;color:#fff;border-radius:999px;padding:8px 12px;font-size:13px}
+.hd button:hover{background:rgba(255,255,255,.2)}
+.demo{background:#fff2cc;color:#6b5000;font-size:13px;text-align:center;padding:8px 14px}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 14px 60px}
+.grid{display:grid;gap:16px;align-items:start}
+@media(min-width:920px){.grid{grid-template-columns:380px 1fr}}
+@media(max-width:919px){.grid.det .ls{display:none}.grid:not(.det) .dt{display:none}}
+.pane{background:var(--wh);border-radius:22px;box-shadow:0 12px 34px rgba(96,0,72,.08);padding:16px}
+.flt{display:flex;gap:6px;margin-bottom:12px}
+.flt button{border:1px solid var(--line);background:var(--wh);border-radius:999px;padding:7px 13px;font-size:13px}
+.flt button.on{background:var(--pl);color:#fff;border-color:var(--pl)}
+.list{display:grid;gap:8px}
+.rq{display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:left;border:1px solid var(--line);background:var(--wh);border-radius:16px;padding:12px 14px}
+.rq:hover{border-color:var(--pl2)}
+.rq.on{border-color:var(--pl);box-shadow:0 0 0 2px var(--li)}
+.rq b{font:400 19px/1.15 var(--sf)}
+.rq small{color:var(--mu);font-size:13px;grid-column:1}
+.rq .badge{grid-row:1/3;grid-column:2;align-self:center}
+.badge{display:inline-block;font-size:11px;font-weight:500;border-radius:999px;padding:4px 9px;white-space:nowrap}
+.badge.pendente{background:#fff2cc;color:#7a5b00}
+.badge.confirmado{background:var(--okb);color:var(--ok)}
+.badge.proposta{background:var(--li);color:var(--pl)}
+.badge.conversar{background:#ffe1e6;color:#9b1c3a}
+.badge.recusado,.badge.cancelado{background:var(--gr);color:var(--grt)}
+.vazio{padding:30px 10px;text-align:center;color:var(--mu)}
+.back{background:none;border:0;padding:0;color:var(--mu);font-size:14px;margin-bottom:12px}
+@media(min-width:920px){.back.mob{display:none}}
+h2.t2{font:400 30px/1.05 var(--sf)}
+.t2 em{color:var(--pl2)}
+.sub{color:var(--pl2);font-size:14px;margin-top:4px}
+.info{display:grid;gap:6px;margin-top:14px;font-size:14px}
+.info div{display:flex;gap:8px}
+.info b{font-weight:500;min-width:84px;color:var(--mu)}
+.obs{margin-top:14px;padding:11px 13px;border-radius:12px;background:var(--li2);font-size:14px;white-space:pre-line}
+.obs b{display:block;font:500 10px/1.3 var(--ss);letter-spacing:.18em;text-transform:uppercase;color:var(--mu);margin-bottom:3px}
+.warn{margin-top:12px;padding:11px 13px;border-radius:12px;background:#fff2cc;color:#6b5000;font-size:14px}
+.good{margin-top:12px;padding:11px 13px;border-radius:12px;background:var(--okb);color:var(--ok);font-size:14px}
+.err{margin-top:12px;padding:11px 13px;border-radius:12px;background:#ffe1e6;color:#9b1c3a;font-size:14px}
+.act{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.b{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:48px;border:0;border-radius:999px;background:var(--pl);color:#fff;font-size:15px;padding:0 18px;width:100%;text-decoration:none}
+.b:hover{filter:brightness(1.15)}
+.b:disabled{opacity:.45;cursor:not-allowed}
+.b.o{background:var(--wh);color:var(--pl);border:1px solid var(--pl)}
+.b.wa{background:#25d366;color:#05210f}
+.b svg{width:19px;height:19px}
+.lnk{background:none;border:0;color:var(--mu);font-size:13px;text-decoration:underline;margin-top:12px;padding:0}
+.grp{font:500 10px/1 var(--ss);letter-spacing:.2em;text-transform:uppercase;color:var(--mu);margin:18px 0 8px}
+.days{display:flex;gap:7px;overflow-x:auto;padding:2px 0 6px;scrollbar-width:none}
+.days::-webkit-scrollbar{display:none}
+.dy{flex:none;width:56px;border:1px solid var(--line);background:var(--wh);border-radius:14px;padding:8px 0;text-align:center}
+.dy small{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--mu)}
+.dy b{display:block;font:400 22px/1.1 var(--sf)}
+.dy em{display:block;font-style:normal;font-size:10px;color:var(--mu)}
+.dy.on{background:var(--pl);border-color:var(--pl);color:#fff}.dy.on small,.dy.on em{color:var(--li)}
+.dy:disabled{opacity:.3;cursor:not-allowed}
+.slots{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px}
+@media(max-width:480px){.slots{grid-template-columns:repeat(4,1fr)}}
+.sl{border:1px solid var(--line);background:var(--li2);border-radius:10px;padding:9px 0;font-size:14px;font-weight:500}
+.sl:hover,.sl.on{background:var(--pl);color:#fff}
+.tl{position:relative;margin-top:30px;height:320px;border-top:1px solid var(--line)}
+.cap{position:absolute;top:-20px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}
+.hr{position:absolute;left:0;right:0;border-top:1px solid var(--line);font-size:10px;color:var(--mu)}
+.hr span{position:absolute;top:-7px;left:0;background:var(--wh);padding-right:5px}
+.ev{position:absolute;border-radius:8px;padding:3px 8px;font-size:12px;line-height:1.2;overflow:hidden}
+.ev b{font-weight:500}
+.ev.p{left:42px;right:calc(50% - 19px);background:var(--gr);color:#47424a;border-left:3px solid #9a949d}
+.ev.c{left:calc(50% + 23px);right:0;background:var(--li);color:var(--pl);border-left:3px solid var(--pl)}
+.ev.q{left:calc(50% + 23px);right:0;background:#fff7dd;color:#6b5000;border-left:3px dashed #c9a227}
+.allday{margin-top:10px;padding:8px 12px;border-radius:10px;background:var(--gr);color:var(--grt);font-size:13px}
+.ok{margin-top:14px;padding:16px;border-radius:16px;background:var(--okb)}
+.ok h3{font:400 22px/1.1 var(--sf);color:var(--ok)}
+.ok p{font-size:14px;color:#2d5c45;margin:4px 0 12px}
+.login{max-width:380px;margin:12vh auto 0;padding:0 16px;text-align:center}
+.login .lg{font:400 15px/1 var(--mf);letter-spacing:.12em;text-transform:uppercase}
+.login .lg em{font-style:normal;color:var(--pl2)}
+.login h1{font:400 40px/1 var(--sf);margin:22px 0 6px}
+.login h1 em{color:var(--pl2)}
+.login form{display:grid;gap:10px;margin-top:20px;text-align:left}
+.login input[type=password]{font:400 16px var(--ss);color:var(--pl);border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--wh);width:100%}
+.login label.ck{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--pl2)}
+.vt{display:flex;gap:6px;max-width:1180px;margin:14px auto 0;padding:0 14px}
+.vt button{border:1px solid var(--line);background:var(--wh);border-radius:999px;padding:9px 16px;font-size:14px}
+.vt button.on{background:var(--pl);color:#fff;border-color:var(--pl)}
+.cal{background:var(--wh);border-radius:22px;box-shadow:0 12px 34px rgba(96,0,72,.08);padding:14px}
+.ctb{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.ctb b{font:400 24px/1.1 var(--sf)}
+.ctb .nv{display:flex;gap:6px}
+.ctb .nv button{border:1px solid var(--line);background:var(--wh);border-radius:999px;padding:7px 12px;font-size:13px}
+.ctb .nv button:hover{border-color:var(--pl)}
+.leg2{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--grt);margin:0 0 10px}
+.leg2 span{display:flex;align-items:center;gap:6px}.leg2 i{width:12px;height:12px;border-radius:3px}
+.dstrip{display:none;gap:6px;overflow-x:auto;margin-bottom:10px;scrollbar-width:none}
+.dstrip::-webkit-scrollbar{display:none}
+.cw{display:grid;grid-template-columns:42px repeat(7,minmax(0,1fr))}
+.ch{position:sticky;top:0;background:var(--wh);z-index:2;text-align:center;padding:6px 2px;border-bottom:1px solid var(--line);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.ch b{display:block;font:400 22px/1.1 var(--sf);letter-spacing:0;color:var(--pl)}
+.ch.hj b{display:grid;place-items:center;width:34px;height:34px;margin:0 auto;border-radius:50%;background:var(--pl);color:#fff}
+.ad2{min-height:24px;padding:3px 2px;border-bottom:1px solid var(--line);display:grid;gap:2px}
+.ad2 span{display:block;background:var(--gr);color:#47424a;border-radius:6px;font-size:11px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tc{position:relative}
+.tc .hl{position:absolute;left:0;right:0;border-top:1px solid var(--line)}
+.tc .hl span{position:absolute;top:-7px;left:0;font-size:10px;color:var(--mu);background:var(--wh);padding-right:4px}
+.dc{position:relative;border-left:1px solid var(--line)}
+.dc.fe{background:repeating-linear-gradient(-45deg,#fff 0 8px,#faf6fa 8px 16px)}
+.dc .hl{position:absolute;left:0;right:0;border-top:1px solid var(--line)}
+.e2{position:absolute;border-radius:7px;padding:3px 6px;font-size:11px;line-height:1.2;overflow:hidden;text-align:left;border:0;margin:0 1px}
+.e2 b{display:block;font-weight:500}
+.e2.p{background:var(--gr);color:#47424a;border-left:3px solid #9a949d}
+.e2.c{background:var(--li);color:var(--pl);border-left:3px solid var(--pl);cursor:pointer}
+.e2.q{background:#fff7dd;color:#6b5000;border-left:3px dashed #c9a227;cursor:pointer}
+.e2.s{background:var(--li2);color:var(--pl2);border-left:3px dashed var(--pl2);cursor:pointer}
+.e2.c:hover,.e2.q:hover,.e2.s:hover{filter:brightness(.96)}
+.now{position:absolute;left:0;right:0;border-top:2px solid #e0245e;z-index:1}
+.now::before{content:"";position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:#e0245e}
+@media(max-width:719px){.dstrip{display:flex}.cw{grid-template-columns:42px 1fr}.cw .x{display:none}.ctb b{font-size:20px}}
+.load{display:flex;align-items:center;justify-content:center;gap:10px;padding:26px 0;color:var(--mu);font-size:14px}
+.load::before{content:"";width:16px;height:16px;border-radius:50%;border:2px solid var(--li);border-top-color:var(--pl);animation:gira .8s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-2.9-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2c0 1.3.9 2.5 1 2.7.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></symbol></svg>
+<div id="app"></div>
+<script src="js/config.js"></script>
+<script src="js/agenda.js"></script>
+<script>
+(function(){
+var A=Agenda,D=document,app=D.getElementById("app"),e=A.esc;
+var S={view:"pedidos",sem:null,semD:null,dm:null,senha:"",lista:null,filtro:"novos",sel:null,dia:null,modo:null,hs:null,pd:null,ph:null,feito:null,erro:"",ocupado:false};
+try{S.senha=localStorage.getItem("painelSenha")||sessionStorage.getItem("painelSenha")||""}catch(x){}
+var NOME={pendente:"Novo pedido",confirmado:"Confirmado",proposta:"Sugestão enviada",conversar:"Quer conversar",recusado:"Recusado",cancelado:"Cancelado"};
+function api(a,d){return A.api(a,Object.assign({senha:S.senha},d||{})).catch(function(err){if(err.auth===false){sair();}throw err})}
+function sair(){S.senha="";S.lista=null;try{localStorage.removeItem("painelSenha");sessionStorage.removeItem("painelSenha")}catch(x){}render()}
+function fone(t){var d=A.dig(t);if(d.length===13&&d.indexOf("55")===0)d=d.slice(2);return d.length===11?"("+d.slice(0,2)+") "+d.slice(2,7)+"-"+d.slice(7):d.length===10?"("+d.slice(0,2)+") "+d.slice(2,6)+"-"+d.slice(6):t}
+function ped(){return(S.lista||[]).find(function(p){return p.id===S.sel})}
+function inicioDe(p){return p.status==="proposta"?{data:p.sdata,hora:p.shora}:{data:p.data,hora:p.hora}}
+
+function render(){
+ if(!S.senha){app.innerHTML='<div class="login"><div class="lg">Amanda <em>Rodrigues</em></div><h1>Painel <em>do studio</em></h1><p class="sub">Área só da Amanda.</p>'+(A.demo?'<div class="warn" style="text-align:left">🧪 Modo demonstração: a senha é <b>demo</b>.</div>':'')+
+  '<form id="lg"><input type="password" name="s" placeholder="Senha" required autocomplete="current-password"><label class="ck"><input type="checkbox" name="l" checked> Lembrar neste celular</label>'+(S.erro?'<div class="err">'+e(S.erro)+'</div>':'')+'<button class="b"'+(S.ocupado?" disabled":"")+'>'+(S.ocupado?"Entrando…":"Entrar")+'</button></form></div>';return}
+ var novos=(S.lista||[]).filter(function(p){return p.status==="pendente"||p.status==="conversar"});
+ var h='<header class="hd"><div class="t">Amanda Rodrigues<small>Painel de agendamentos</small></div><div class="bt"><button data-refresh>↻ Atualizar</button><button data-sair>Sair</button></div></header>'+(A.demo?'<div class="demo">🧪 Modo demonstração: dados de exemplo, nada é salvo na agenda de verdade.</div>':'');
+ h+='<nav class="vt"><button class="'+(S.view==="pedidos"?"on":"")+'" data-v="pedidos">📋 Pedidos'+(novos.length?' ('+novos.length+')':'')+'</button><button class="'+(S.view==="agenda"?"on":"")+'" data-v="agenda">🗓 Agenda</button></nav>';
+ if(S.view==="agenda"){app.innerHTML=h+'<div class="wrap">'+calendario()+'</div>';var hj=D.querySelector(".now");return}
+ h+='<div class="wrap"><div class="grid'+(S.sel?" det":"")+'"><section class="pane ls">';
+ h+='<div class="flt"><button class="'+(S.filtro==="novos"?"on":"")+'" data-f="novos">Precisam de resposta ('+novos.length+')</button><button class="'+(S.filtro==="todos"?"on":"")+'" data-f="todos">Todos</button></div>';
+ if(!S.lista)h+='<div class="load">Carregando pedidos…</div>';
+ else{var L=S.filtro==="novos"?novos:S.lista;
+  h+=L.length?'<div class="list">'+L.map(function(p){var i=inicioDe(p);return'<button class="rq'+(p.id===S.sel?" on":"")+'" data-r="'+p.id+'"><b>'+(p.conflitos&&p.conflitos.length?"⚠️ ":"")+e(p.nome)+'</b><small>'+e(p.itens.map(function(x){return x.tec}).join(" + "))+'<br>'+A.dt(i.data)+' · '+i.hora+'</small><span class="badge '+p.status+'">'+NOME[p.status]+'</span></button>'}).join("")+'</div>':'<div class="vazio">'+(S.filtro==="novos"?"Nenhum pedido esperando resposta 🩷":"Nenhum pedido ainda.")+'</div>'}
+ h+='</section><section class="pane dt">'+detalhe()+'</section></div></div>';
+ app.innerHTML=h}
+
+function detalhe(){var p=ped();if(!p)return'<div class="vazio">Escolha um pedido na lista.</div>';
+ var i=inicioDe(p),fim=A.hm(A.amin(i.hora)+p.min),h='<button class="back mob" data-voltar>← Pedidos</button>';
+ h+='<h2 class="t2">'+e(p.nome)+' <em>'+(p.status==="pendente"?"pediu":"")+'</em></h2><p class="sub">'+e(A.rot(p.itens))+'</p>';
+ h+='<div class="info"><div><b>Quando</b><span>'+A.dt(i.data)+' · '+i.hora+' às '+fim+'</span></div><div><b>WhatsApp</b><span>'+e(fone(p.tel))+'</span></div><div><b>Situação</b><span class="badge '+p.status+'">'+NOME[p.status]+'</span></div></div>';
+ if(p.obs)h+='<div class="obs"><b>📝 Observação da cliente</b>'+e(p.obs)+'</div>';
+ if(S.feito&&S.feito.id===p.id){var link=A.wa(A.waNum(p.tel),S.feito.msg);
+  h+='<div class="ok"><h3>'+(S.feito.tipo==="conf"?"Confirmado na tua agenda ✓":"Sugestão registrada ✓")+'</h3><p>Agora manda pra '+e(p.nome)+' no WhatsApp. A mensagem já vai pronta, é só tocar em enviar.</p><a class="b wa" href="'+link+'" target="_blank" rel="noopener"><svg><use href="#wa"/></svg>Enviar no WhatsApp</a></div>'}
+ if(S.erro)h+='<div class="err">'+e(S.erro)+'</div>';
+ if(p.status==="pendente"||p.status==="conversar"){
+  if(p.status==="conversar")h+='<div class="warn">💬 A cliente não aceitou o horário sugerido e quer conversar. Tu pode sugerir outro.</div>';
+  h+=(p.conflitos&&p.conflitos.length)?'<div class="warn">⚠️ Conflita com '+(p.conflitos[0].cliente?"uma cliente":"teu compromisso")+': <b>'+e(p.conflitos[0].titulo)+'</b>'+(p.conflitos[0].diaInteiro?" (dia inteiro)":" ("+p.conflitos[0].ini+"–"+p.conflitos[0].fim+")")+'. Que tal sugerir outro horário?</div>':(p.status==="pendente"?'<div class="good">✓ Tua agenda está livre nesse horário.</div>':'');
+  if(S.modo==="sug")h+=sugerir(p);
+  else h+='<div class="act"><button class="b wa" data-conf'+(S.ocupado?" disabled":"")+'><svg><use href="#wa"/></svg>Confirmar</button><button class="b o" data-sug>Sugerir outro horário</button></div><button class="lnk" data-rec>Não vou conseguir atender (recusar)</button>'}
+ else if(p.status==="confirmado"&&!(S.feito&&S.feito.id===p.id))h+='<div class="good">✓ Confirmado e salvo no teu Google Agenda.</div><a class="b o" style="margin-top:10px" target="_blank" rel="noopener" href="'+A.wa(A.waNum(p.tel),A.MSG.conf(p))+'"><svg><use href="#wa"/></svg>Reenviar confirmação</a>';
+ else if(p.status==="proposta"&&!(S.feito&&S.feito.id===p.id))h+='<div class="obs"><b>💬 Esperando a cliente aceitar</b>Tu sugeriu '+A.dt(p.sdata)+' às '+p.shora+'.</div><a class="b o" style="margin-top:10px" target="_blank" rel="noopener" href="'+A.wa(A.waNum(p.tel),A.MSG.prop(p))+'"><svg><use href="#wa"/></svg>Reenviar sugestão</a>';
+ h+='<p class="sub" style="margin-top:20px">Tua agenda em '+A.dt(S.modo==="sug"&&S.pd?S.pd:i.data)+':</p>'+agenda();
+ return h}
+
+function sugerir(p){var h='<div class="grp">Sugerir outro dia</div>';
+ if(!S.hs)return h+'<div class="load">Buscando teus horários livres…</div>';
+ h+='<div class="days">'+S.hs.filter(function(d){return d.horarios.length}).map(function(d){var x=A.parse(d.data);return'<button class="dy'+(S.pd===d.data?" on":"")+'" data-pd="'+d.data+'"><small>'+A.DS[x.getDay()]+'</small><b>'+x.getDate()+'</b><em>'+A.MN[x.getMonth()]+'</em></button>'}).join("")+'</div>';
+ if(S.pd){var d=S.hs.find(function(x){return x.data===S.pd});h+='<div class="slots">'+d.horarios.map(function(m){return'<button class="sl'+(S.ph===m?" on":"")+'" data-ph="'+m+'">'+m+'</button>'}).join("")+'</div>'}
+ return h+'<div class="act"><button class="b o" data-cancel>Cancelar</button><button class="b wa" data-envsug'+(!S.ph||S.ocupado?" disabled":"")+'><svg><use href="#wa"/></svg>Enviar sugestão</button></div>'}
+
+function agenda(){if(!S.dia)return'<div class="load">Carregando tua agenda…</div>';
+ var A0=540,A1=1080,PX=320/(A1-A0),h="";
+ S.dia.eventos.filter(function(x){return x.diaInteiro}).forEach(function(x){h+='<div class="allday">'+e(x.titulo)+' (dia inteiro)</div>'});
+ h+='<div class="tl"><span class="cap" style="left:42px">Pessoal</span><span class="cap" style="left:calc(50% + 23px)">Clientes</span>';
+ for(var m=A0;m<=A1;m+=60)h+='<div class="hr" style="top:'+((m-A0)*PX)+'px"><span>'+A.hm(m)+'</span></div>';
+ function box(cls,ini,fim,txt,cor){var a=Math.max(A.amin(ini),A0),b=Math.min(A.amin(fim)||A1,A1);if(b<=A0||a>=A1)return"";return'<div class="ev '+cls+'" style="'+estilo(cor||"11",cls)+'top:'+((a-A0)*PX+1)+'px;height:'+Math.max((b-a)*PX-2,16)+'px">'+txt+'</div>'}
+ S.dia.eventos.filter(function(x){return!x.diaInteiro}).forEach(function(x){h+=box(x.cliente?"c":"p",x.ini,x.fim,'<b>'+e(x.titulo)+'</b> '+x.ini+'–'+x.fim,x.cor)});
+ S.dia.pedidos.forEach(function(x){h+=box(x.status==="confirmado"?"c":"q",x.ini,x.fim,'<b>'+e(x.nome)+'</b> '+(x.status==="confirmado"?x.ini+'–'+x.fim:x.status==="proposta"?"(sugerido)":"(aguardando)"),x.cor||A.corDe(x.itens))});
+ return h+'</div>'}
+
+function estilo(cor,t){var c=A.CORES[cor]||A.CORES["11"];return"background:"+c+"2e;color:#2b2230;border-left:3px "+(t==="q"||t==="s"?"dashed":"solid")+" "+c+";"}
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function segunda(d){var x=new Date(d);x.setHours(0,0,0,0);var w=(x.getDay()+6)%7;x.setDate(x.getDate()-w);return x}
+function carregarSemana(){if(!S.sem)S.sem=ymd(segunda(new Date()));S.semD=null;render();
+ api("admin.periodo",{inicio:S.sem,dias:7}).then(function(r){S.semD=r.dias;if(S.dm===null){var t=ymd(new Date()),k=r.dias.findIndex(function(d){return d.data===t});S.dm=k<0?0:k}render()}).catch(function(err){S.erro=err.message;render()})}
+function calendario(){
+ if(!S.sem)S.sem=ymd(segunda(new Date()));
+ var b=A.parse(S.sem),f=new Date(b);f.setDate(b.getDate()+6);
+ var tit=b.getDate()+(b.getMonth()!==f.getMonth()?" "+A.MN[b.getMonth()]:"")+" – "+f.getDate()+" "+A.MN[f.getMonth()];
+ var h='<div class="cal"><div class="ctb"><b>'+tit+'</b><div class="nv"><button data-sem="-1" aria-label="Semana anterior">←</button><button data-sem="0">Hoje</button><button data-sem="1" aria-label="Próxima semana">→</button></div></div>';
+ var LG=[["11","Pessoal"],["9","Manutenção de cílios"],["5","Nova aplicação"],["2","Sobrancelha"],["1","Micro e brow"]];
+ h+='<div class="leg2">'+LG.map(function(x){var c=A.CORES[x[0]];return'<span><i style="background:'+c+'33;border-left:3px solid '+c+'"></i>'+x[1]+'</span>'}).join("")+'<span><i style="border:1.5px dashed #9b6b8f;background:#fff"></i>Tracejado = aguardando resposta</span></div>';
+ if(S.erro)h+='<div class="err">'+e(S.erro)+'</div>';
+ if(!S.semD)return h+'<div class="load">Carregando tua agenda…</div></div>';
+ var hoje=ymd(new Date()),H0=7,H1=23,PX=42,alt=(H1-H0)*PX;
+ h+='<div class="dstrip">'+S.semD.map(function(d,k){var x=A.parse(d.data),n=d.eventos.length+d.pedidos.length;return'<button class="dy'+(k===S.dm?" on":"")+'" data-dm="'+k+'"><small>'+A.DS[x.getDay()]+'</small><b>'+x.getDate()+'</b><em>'+(n?n+(n>1?" itens":" item"):"livre")+'</em></button>'}).join("")+'</div>';
+ h+='<div class="cw"><div class="ch" style="border:0"></div>'+S.semD.map(function(d,k){var x=A.parse(d.data);return'<div class="ch'+(d.data===hoje?" hj":"")+(k!==S.dm?" x":"")+'">'+A.DS[x.getDay()]+'<b>'+x.getDate()+'</b></div>'}).join("");
+ h+='<div class="ad2" style="border:0"></div>'+S.semD.map(function(d,k){return'<div class="ad2'+(k!==S.dm?" x":"")+'">'+d.eventos.filter(function(x){return x.diaInteiro}).map(function(x){return'<span style="'+estilo(x.cor||"11","p")+'" title="'+e(x.titulo)+'">'+e(x.titulo)+'</span>'}).join("")+'</div>'}).join("");
+ var hl="";for(var m=H0;m<=H1;m++)hl+='<div class="hl" style="top:'+((m-H0)*PX)+'px"></div>';
+ var tc='<div class="tc" style="height:'+alt+'px">';for(var m2=H0;m2<H1;m2++)tc+='<div class="hl" style="top:'+((m2-H0)*PX)+'px;border:0"><span>'+String(m2).padStart(2,"0")+'h</span></div>';h+=tc+'</div>';
+ S.semD.forEach(function(d,k){var x=A.parse(d.data),fe=[0,1].indexOf(x.getDay())>=0;
+  var it=d.eventos.filter(function(v){return!v.diaInteiro}).map(function(v){return{t:v.cliente?"c":"p",cor:v.cor||"11",a:A.amin(v.ini),b:A.amin(v.fim)||1440,txt:'<b>'+(v.cliente?"🩷 ":"")+e(v.titulo)+'</b>'+v.ini+'–'+v.fim}})
+   .concat(d.pedidos.map(function(p){var cls=p.status==="confirmado"?"c":p.status==="proposta"?"s":"q";return{t:cls,cor:p.cor||A.corDe(p.itens),id:p.id,a:A.amin(p.ini),b:A.amin(p.fim),txt:'<b>'+(cls==="c"?"🩷 ":cls==="q"?"⏳ ":"💬 ")+e(p.nome)+'</b>'+e(p.itens.map(function(i){return i.tec}).join(" + "))+'<br>'+p.ini+'–'+p.fim}}));
+  it.sort(function(u,v){return u.a-v.a});var lanes=[];it.forEach(function(v){var L=0;while(lanes[L]&&lanes[L]>v.a)L++;lanes[L]=v.b;v.l=L});var nl=Math.max(lanes.length,1);
+  var col='<div class="dc'+(fe?" fe":"")+(k!==S.dm?" x":"")+'" style="height:'+alt+'px">'+hl;
+  it.forEach(function(v){var a=Math.max(v.a,H0*60),bb=Math.min(v.b,H1*60);if(bb<=a)return;var top=(a-H0*60)/60*PX,hh=Math.max((bb-a)/60*PX-2,18);
+   col+=(v.id?'<button data-go="'+v.id+'"':'<div')+' class="e2 '+v.t+'" style="'+estilo(v.cor,v.t)+'top:'+top+'px;height:'+hh+'px;left:'+(v.l/nl*100)+'%;width:calc('+(100/nl)+'% - 2px)">'+v.txt+(v.id?'</button>':'</div>')});
+  if(d.data===hoje){var nm=new Date(),mm=nm.getHours()*60+nm.getMinutes();if(mm>H0*60&&mm<H1*60)col+='<div class="now" style="top:'+((mm-H0*60)/60*PX)+'px"></div>'}
+  h+=col+'</div>'});
+ return h+'</div></div>'}
+function carregar(){return api("admin.lista").then(function(r){S.lista=r.pedidos;render();if(S.sel)carregarDia()}).catch(function(err){S.erro=err.message;render()})}
+function carregarDia(){var p=ped();if(!p)return;var d=S.modo==="sug"&&S.pd?S.pd:inicioDe(p).data;S.dia=null;render();
+ api("admin.dia",{data:d}).then(function(r){S.dia=r;render()}).catch(function(){})}
+
+app.addEventListener("submit",function(ev){ev.preventDefault();var f=ev.target;if(f.id!=="lg")return;var s=f.s.value;S.ocupado=true;S.erro="";render();
+ A.api("admin.login",{senha:s}).then(function(){S.senha=s;S.ocupado=false;try{(f.l&&f.l.checked?localStorage:sessionStorage).setItem("painelSenha",s)}catch(x){}render();carregar()})
+ .catch(function(err){S.ocupado=false;S.erro=err.message||"Senha incorreta";render()})});
+app.addEventListener("click",function(ev){var t=ev.target.closest("button");if(!t||t.closest("form"))return;var p=ped();
+ if(t.hasAttribute("data-sair"))return sair();
+ if(t.hasAttribute("data-refresh")){S.lista=null;render();carregar();if(S.view==="agenda")carregarSemana();return}
+ if(t.dataset.v){S.view=t.dataset.v;S.erro="";if(S.view==="agenda")carregarSemana();else render();return}
+ if(t.dataset.sem!==undefined){var n=+t.dataset.sem;if(n===0){S.sem=null;S.dm=null}else{var bs=A.parse(S.sem);bs.setDate(bs.getDate()+7*n);S.sem=ymd(bs);S.dm=0}return carregarSemana()}
+ if(t.dataset.dm!==undefined){S.dm=+t.dataset.dm;return render()}
+ if(t.dataset.go){S.view="pedidos";S.sel=t.dataset.go;S.modo=null;S.hs=null;S.pd=S.ph=null;S.feito=null;S.erro="";render();scrollTo(0,0);return carregarDia()}
+ if(t.dataset.f){S.filtro=t.dataset.f;return render()}
+ if(t.dataset.r){S.sel=t.dataset.r;S.modo=null;S.hs=null;S.pd=S.ph=null;S.feito=null;S.erro="";render();scrollTo(0,0);return carregarDia()}
+ if(t.hasAttribute("data-voltar")){S.sel=null;S.feito=null;return render()}
+ if(t.hasAttribute("data-conf")){S.ocupado=true;S.erro="";render();
+  return api("admin.confirmar",{id:p.id}).then(function(){var i=inicioDe(p);var q=Object.assign({},p,{data:i.data,hora:i.hora});S.feito={id:p.id,tipo:"conf",msg:A.MSG.conf(q)};S.ocupado=false;return carregar()}).catch(function(err){S.ocupado=false;S.erro=err.message;render()})}
+ if(t.hasAttribute("data-sug")){S.modo="sug";S.hs=null;S.pd=S.ph=null;render();return api("admin.horarios",{id:p.id}).then(function(r){S.hs=r.dias;render()}).catch(function(err){S.erro=err.message;S.modo=null;render()})}
+ if(t.hasAttribute("data-cancel")){S.modo=null;S.pd=S.ph=null;render();return carregarDia()}
+ if(t.dataset.pd){S.pd=t.dataset.pd;S.ph=null;render();return carregarDia()}
+ if(t.dataset.ph){S.ph=t.dataset.ph;return render()}
+ if(t.hasAttribute("data-envsug")){S.ocupado=true;S.erro="";render();var pd=S.pd,ph=S.ph;
+  return api("admin.sugerir",{id:p.id,data:pd,hora:ph}).then(function(){S.feito={id:p.id,tipo:"prop",msg:A.MSG.prop(Object.assign({},p,{sdata:pd,shora:ph}))};S.modo=null;S.ocupado=false;return carregar()}).catch(function(err){S.ocupado=false;S.erro=err.message;render()})}
+ if(t.hasAttribute("data-rec")){if(!confirm("Recusar o pedido de "+p.nome+"? Lembra de avisar ela no WhatsApp."))return;
+  return api("admin.recusar",{id:p.id}).then(carregar).catch(function(err){S.erro=err.message;render()})}
+});
+/* atualiza sozinho a cada 1 minuto com o painel aberto */
+setInterval(function(){if(S.senha&&!D.hidden&&!S.ocupado&&S.modo!=="sug"){api("admin.lista").then(function(r){S.lista=r.pedidos;if(S.view!=="agenda")render()}).catch(function(){});if(S.view==="agenda"&&S.sem)api("admin.periodo",{inicio:S.sem,dias:7}).then(function(r){S.semD=r.dias;render()}).catch(function(){})}},60000);
+render();if(S.senha)carregar();
+})();
+</script>
+</body>
+</html>

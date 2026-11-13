@@ -1,0 +1,10 @@
+{
+  "name": "Painel · Amanda Rodrigues",
+  "short_name": "Painel Amanda",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f2f6",
+  "theme_color": "#600048",
+  "icons": [{ "src": "icone.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }]
+}
