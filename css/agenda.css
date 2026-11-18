@@ -79,7 +79,7 @@ input:focus,textarea:focus{outline:2px solid var(--li);border-color:var(--pl)}
 .badge.pendente{background:#fff2cc;color:#7a5b00}
 .badge.confirmado{background:var(--okb);color:var(--ok)}
 .badge.proposta{background:var(--li);color:var(--pl)}
-.badge.conversar,.badge.recusado,.badge.cancelado{background:#eceaee;color:#5f5963}
+.badge.conversar,.badge.recusado,.badge.cancelado,.badge.expirado{background:#eceaee;color:#5f5963}
 .my{display:grid;gap:10px;margin-top:18px}
 .myc{border:1px solid var(--line);border-radius:18px;padding:15px 16px;display:grid;gap:5px}
 .myc b{font:400 21px/1.2 var(--sf)}
@@ -90,3 +90,7 @@ input:focus,textarea:focus{outline:2px solid var(--li);border-color:var(--pl)}
 .foot{text-align:center;font-size:13px;color:var(--mu);padding:0 20px 40px}
 .foot a{color:var(--pl2)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* armadilha anti-robô: fora da tela, invisível pra pessoas e leitores de tela */
+.hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;overflow:hidden}
+.priv{margin-top:10px;font-size:13px;line-height:1.5;color:var(--mu);background:var(--li2);border-radius:12px;padding:10px 12px}

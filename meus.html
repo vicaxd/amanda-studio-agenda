@@ -19,7 +19,7 @@
 var A=Agenda,D=document,v=D.getElementById("v"),e=A.esc;
 var S={tel:"",cod:"",lista:null,carregando:false,erro:""};
 if(A.demo)D.getElementById("demo").innerHTML='<div class="demo">🧪 <b>Modo demonstração.</b> Pra testar: (51) 97777-2222 com o código 7350, ou (51) 98888-1111 com 4821.</div>';
-var TXT={pendente:"Aguardando a Amanda",confirmado:"Confirmado ✓",proposta:"Amanda sugeriu outro horário",conversar:"Combinar pelo WhatsApp",recusado:"Não foi possível atender",cancelado:"Cancelado"};
+var TXT={pendente:"Aguardando a Amanda",confirmado:"Confirmado ✓",proposta:"Amanda sugeriu outro horário",conversar:"Combinar pelo WhatsApp",recusado:"Não foi possível atender",cancelado:"Cancelado",expirado:"Pedido vencido, faz um novo"};
 function render(){var h="";
  if(!S.lista){
   h='<h1 class="t2">Meus <em>horários</em></h1><p class="sub">Use o WhatsApp e o código de 4 números que você recebeu ao pedir o horário.</p>'+

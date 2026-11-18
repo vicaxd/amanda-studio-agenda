@@ -117,7 +117,7 @@
       setTimeout(function () {
         try {
           var a = r.acao, out;
-          if (a.indexOf("admin.") === 0 && r.senha !== "demo") { var e = new Error("Senha incorreta (no modo demonstração a senha é: demo)"); e.auth = false; throw e; }
+          if (a.indexOf("admin.") === 0 && r.senha !== "demo" && r.token !== "demo") { var e = new Error("Senha incorreta (no modo demonstração a senha é: demo)"); e.auth = false; throw e; }
           if (a === "config") out = { duracoes: DUR };
           else if (a === "horarios") out = { dias: livres(s, (r.itens || []).reduce(function (t, i) { return t + DUR[i.tipo]; }, 0)) };
           else if (a === "pedir") {
@@ -133,7 +133,7 @@
             if (q.status === "proposta") { if (a === "aceitar") { q.data = q.sdata; q.hora = q.shora; q.sdata = q.shora = ""; q.status = "confirmado"; } else q.status = "conversar"; }
             out = { status: q.status };
           }
-          else if (a === "admin.login") out = { ok: true };
+          else if (a === "admin.login") out = { ok: true, token: "demo" };
           else if (a === "admin.lista") out = { pedidos: s.pedidos.slice().reverse().map(function (p) { return Object.assign({}, p, { conflitos: conflitos(s, p).map(function (e) { return { titulo: e.titulo, diaInteiro: !!e.diaInteiro, ini: e.ini, fim: e.fim }; }) }); }) };
           else if (a === "admin.dia") out = diaDemo(s, r.data);
           else if (a === "admin.periodo") { var b0 = parse(r.inicio), L2 = []; for (var k = 0; k < Math.min(+r.dias || 7, 14); k++) { var dk = new Date(b0); dk.setDate(b0.getDate() + k); L2.push(diaDemo(s, ymd(dk))); } out = { dias: L2 }; }
@@ -141,6 +141,7 @@
           else if (a === "admin.confirmar") { achar(r.id).status = "confirmado"; out = { ok: true }; }
           else if (a === "admin.sugerir") { var z = achar(r.id); z.status = "proposta"; z.sdata = r.data; z.shora = r.hora; out = { ok: true }; }
           else if (a === "admin.recusar") { achar(r.id).status = "recusado"; out = { ok: true }; }
+          else if (a === "admin.recusarVarios") { var n = 0; (r.ids || []).forEach(function (id) { var q = s.pedidos.find(function (x) { return x.id === id; }); if (q && q.status === "pendente") { q.status = "recusado"; n++; } }); out = { ok: true, recusados: n }; }
           else throw new Error("Ação desconhecida");
           save(s); ok(JSON.parse(JSON.stringify(out)));
         } catch (err) { no(err); }

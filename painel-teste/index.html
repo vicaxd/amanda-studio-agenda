@@ -52,7 +52,10 @@ h1,h2,h3,p{margin:0}
 .badge.confirmado{background:var(--okb);color:var(--ok)}
 .badge.proposta{background:var(--li);color:var(--pl)}
 .badge.conversar{background:#ffe1e6;color:#9b1c3a}
-.badge.recusado,.badge.cancelado{background:var(--gr);color:var(--grt)}
+.badge.recusado,.badge.cancelado,.badge.expirado{background:var(--gr);color:var(--grt)}
+.massa{display:flex;justify-content:flex-end;margin:-4px 0 10px}
+.massa button{background:none;border:0;padding:4px 0;color:var(--mu);font-size:13px;text-decoration:underline;cursor:pointer}
+.massa button:hover{color:var(--pl)}
 .vazio{padding:30px 10px;text-align:center;color:var(--mu)}
 .back{background:none;border:0;padding:0;color:var(--mu);font-size:14px;margin-bottom:12px}
 @media(min-width:920px){.back.mob{display:none}}
@@ -158,16 +161,17 @@ h2.t2{font:400 30px/1.05 var(--sf)}
 (function(){
 var A=Agenda,D=document,app=D.getElementById("app"),e=A.esc;
 var S={view:"pedidos",sem:null,semD:null,dm:null,senha:"",lista:null,filtro:"novos",sel:null,dia:null,modo:null,hs:null,pd:null,ph:null,feito:null,erro:"",ocupado:false};
-try{S.senha=localStorage.getItem("painelSenha")||sessionStorage.getItem("painelSenha")||""}catch(x){}
-var NOME={pendente:"Novo pedido",confirmado:"Confirmado",proposta:"Sugestão enviada",conversar:"Quer conversar",recusado:"Recusado",cancelado:"Cancelado"};
-function api(a,d){return A.api(a,Object.assign({senha:S.senha},d||{})).catch(function(err){if(err.auth===false){sair();}throw err})}
-function sair(){S.senha="";S.lista=null;try{localStorage.removeItem("painelSenha");sessionStorage.removeItem("painelSenha")}catch(x){}render()}
+S.token="";try{S.token=localStorage.getItem("painelToken")||sessionStorage.getItem("painelToken")||"";if(!S.token)S.senha=localStorage.getItem("painelSenha")||sessionStorage.getItem("painelSenha")||""}catch(x){}
+function logado(){return!!(S.token||S.senha)}
+var NOME={pendente:"Novo pedido",confirmado:"Confirmado",proposta:"Sugestão enviada",conversar:"Quer conversar",recusado:"Recusado",cancelado:"Cancelado",expirado:"Vencido"};
+function api(a,d){return A.api(a,Object.assign(S.token?{token:S.token}:{senha:S.senha},d||{})).catch(function(err){if(err.auth===false){sair();S.erro=err.message;render()}throw err})}
+function sair(){S.senha="";S.token="";S.lista=null;try{["painelSenha","painelToken"].forEach(function(k){localStorage.removeItem(k);sessionStorage.removeItem(k)})}catch(x){}render()}
 function fone(t){var d=A.dig(t);if(d.length===13&&d.indexOf("55")===0)d=d.slice(2);return d.length===11?"("+d.slice(0,2)+") "+d.slice(2,7)+"-"+d.slice(7):d.length===10?"("+d.slice(0,2)+") "+d.slice(2,6)+"-"+d.slice(6):t}
 function ped(){return(S.lista||[]).find(function(p){return p.id===S.sel})}
 function inicioDe(p){return p.status==="proposta"?{data:p.sdata,hora:p.shora}:{data:p.data,hora:p.hora}}
 
 function render(){
- if(!S.senha){app.innerHTML='<div class="login"><div class="lg">Amanda <em>Rodrigues</em></div><h1>Painel <em>do studio</em></h1><p class="sub">Área só da Amanda.</p>'+(A.demo?'<div class="warn" style="text-align:left">🧪 Modo demonstração: a senha é <b>demo</b>.</div>':'')+
+ if(!logado()){app.innerHTML='<div class="login"><div class="lg">Amanda <em>Rodrigues</em></div><h1>Painel <em>do studio</em></h1><p class="sub">Área só da Amanda.</p>'+(A.demo?'<div class="warn" style="text-align:left">🧪 Modo demonstração: a senha é <b>demo</b>.</div>':'')+
   '<form id="lg"><input type="password" name="s" placeholder="Senha" required autocomplete="current-password"><label class="ck"><input type="checkbox" name="l" checked> Lembrar neste celular</label>'+(S.erro?'<div class="err">'+e(S.erro)+'</div>':'')+'<button class="b"'+(S.ocupado?" disabled":"")+'>'+(S.ocupado?"Entrando…":"Entrar")+'</button></form></div>';return}
  var novos=(S.lista||[]).filter(function(p){return p.status==="pendente"||p.status==="conversar"});
  var h='<header class="hd"><div class="t">Amanda Rodrigues<small>Painel de agendamentos</small></div><div class="bt"><button data-refresh>↻ Atualizar</button><button data-sair>Sair</button></div></header>'+(A.demo?'<div class="demo">🧪 Modo demonstração: dados de exemplo, nada é salvo na agenda de verdade.</div>':'');
@@ -177,6 +181,8 @@ function render(){
  h+='<div class="flt"><button class="'+(S.filtro==="novos"?"on":"")+'" data-f="novos">Precisam de resposta ('+novos.length+')</button><button class="'+(S.filtro==="todos"?"on":"")+'" data-f="todos">Todos</button></div>';
  if(!S.lista)h+='<div class="load">Carregando pedidos…</div>';
  else{var L=S.filtro==="novos"?novos:S.lista;
+  var pend=(S.lista||[]).filter(function(p){return p.status==="pendente"});
+  if(S.filtro==="novos"&&pend.length>1)h+='<div class="massa"><button data-massa>Recusar todos os '+pend.length+' pedidos novos</button></div>';
   h+=L.length?'<div class="list">'+L.map(function(p){var i=inicioDe(p);return'<button class="rq'+(p.id===S.sel?" on":"")+'" data-r="'+p.id+'"><b>'+(p.conflitos&&p.conflitos.length?"⚠️ ":"")+e(p.nome)+'</b><small>'+e(p.itens.map(function(x){return x.tec}).join(" + "))+'<br>'+A.dt(i.data)+' · '+i.hora+'</small><span class="badge '+p.status+'">'+NOME[p.status]+'</span></button>'}).join("")+'</div>':'<div class="vazio">'+(S.filtro==="novos"?"Nenhum pedido esperando resposta 🩷":"Nenhum pedido ainda.")+'</div>'}
  h+='</section><section class="pane dt">'+detalhe()+'</section></div></div>';
  app.innerHTML=h}
@@ -250,10 +256,16 @@ function carregarDia(){var p=ped();if(!p)return;var d=S.modo==="sug"&&S.pd?S.pd:
  api("admin.dia",{data:d}).then(function(r){S.dia=r;render()}).catch(function(){})}
 
 app.addEventListener("submit",function(ev){ev.preventDefault();var f=ev.target;if(f.id!=="lg")return;var s=f.s.value;S.ocupado=true;S.erro="";render();
- A.api("admin.login",{senha:s}).then(function(){S.senha=s;S.ocupado=false;try{(f.l&&f.l.checked?localStorage:sessionStorage).setItem("painelSenha",s)}catch(x){}render();carregar()})
+ A.api("admin.login",{senha:s}).then(function(r){S.ocupado=false;var st=(f.l&&f.l.checked?localStorage:sessionStorage);
+  if(r&&r.token){S.token=r.token;S.senha="";try{st.setItem("painelToken",r.token);localStorage.removeItem("painelSenha");sessionStorage.removeItem("painelSenha")}catch(x){}}
+  else{S.senha=s;try{st.setItem("painelSenha",s)}catch(x){}}
+  render();carregar()})
  .catch(function(err){S.ocupado=false;S.erro=err.message||"Senha incorreta";render()})});
 app.addEventListener("click",function(ev){var t=ev.target.closest("button");if(!t||t.closest("form"))return;var p=ped();
  if(t.hasAttribute("data-sair"))return sair();
+ if(t.hasAttribute("data-massa")){var ps=(S.lista||[]).filter(function(p){return p.status==="pendente"});
+  if(!confirm("Recusar os "+ps.length+" pedidos novos? Use isso pra limpar pedidos falsos. Os horários voltam a ficar livres."))return;
+  return api("admin.recusarVarios",{ids:ps.map(function(p){return p.id})}).then(function(r){S.erro="";S.sel=null;return carregar()}).catch(function(err){S.erro=err.message==="Ação desconhecida"?"Atualize a ponte pra usar esse botão.":err.message;render()})}
  if(t.hasAttribute("data-refresh")){S.lista=null;render();carregar();if(S.view==="agenda")carregarSemana();return}
  if(t.dataset.v){S.view=t.dataset.v;S.erro="";if(S.view==="agenda")carregarSemana();else render();return}
  if(t.dataset.sem!==undefined){var n=+t.dataset.sem;if(n===0){S.sem=null;S.dm=null}else{var bs=A.parse(S.sem);bs.setDate(bs.getDate()+7*n);S.sem=ymd(bs);S.dm=0}return carregarSemana()}
@@ -274,8 +286,8 @@ app.addEventListener("click",function(ev){var t=ev.target.closest("button");if(!
   return api("admin.recusar",{id:p.id}).then(carregar).catch(function(err){S.erro=err.message;render()})}
 });
 /* atualiza sozinho a cada 1 minuto com o painel aberto */
-setInterval(function(){if(S.senha&&!D.hidden&&!S.ocupado&&S.modo!=="sug"){api("admin.lista").then(function(r){S.lista=r.pedidos;if(S.view!=="agenda")render()}).catch(function(){});if(S.view==="agenda"&&S.sem)api("admin.periodo",{inicio:S.sem,dias:7}).then(function(r){S.semD=r.dias;render()}).catch(function(){})}},60000);
-render();if(S.senha)carregar();
+setInterval(function(){if(logado()&&!D.hidden&&!S.ocupado&&S.modo!=="sug"){api("admin.lista").then(function(r){S.lista=r.pedidos;if(S.view!=="agenda")render()}).catch(function(){});if(S.view==="agenda"&&S.sem)api("admin.periodo",{inicio:S.sem,dias:7}).then(function(r){S.semD=r.dias;render()}).catch(function(){})}},60000);
+render();if(logado())carregar();
 })();
 </script>
 </body>

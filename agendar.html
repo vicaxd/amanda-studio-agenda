@@ -49,12 +49,12 @@ function render(){passos();var h="";
     var dd=ds.find(function(d){return d.data===S.dia});
     h+='<div class="slots">'+dd.horarios.map(function(m){return'<button class="sl" data-h="'+m+'">'+m+'</button>'}).join("")+'</div><p class="sub" style="margin-top:12px;font-size:13px">Só aparecem os horários livres.</p>'}}
   h+='<button class="back" data-back>← Trocar técnica</button>'}
- if(S.p===2){var F=S.f||{},fim=A.hm(A.amin(S.hora)+min());
+ if(S.p===2){if(!S.t0)S.t0=Date.now();var F=S.f||{},fim=A.hm(A.amin(S.hora)+min());
   h='<h1 class="t2">Seus <em>dados</em></h1><div class="sum"><span>'+e(A.rot(itens()))+'</span><b>'+A.dt(S.dia)+' · '+S.hora+' às '+fim+'</b></div>'+
-  '<form id="fm"><label>Nome<input name="n" required maxlength="60" autocomplete="given-name" value="'+e(F.nome||"")+'"></label><label>WhatsApp<input name="t" required inputmode="tel" autocomplete="tel" placeholder="(51) 90000-0000" value="'+e(F.tel||"")+'"></label>'+
+  '<form id="fm"><div class="hp" aria-hidden="true"><label>Site<input name="site" tabindex="-1" autocomplete="off"></label></div><label>Nome<input name="n" required maxlength="60" autocomplete="given-name" value="'+e(F.nome||"")+'"></label><label>WhatsApp<input name="t" required inputmode="tel" autocomplete="tel" placeholder="(51) 90000-0000" value="'+e(F.tel||"")+'"></label>'+
   '<label><span>Observação <span style="text-transform:none;letter-spacing:0">(opcional)</span></span><textarea name="o" rows="3" maxlength="300" placeholder="Ex.: é minha primeira vez, tenho alergia a algum produto, quero um efeito mais natural…">'+e(F.obs||"")+'</textarea></label>'+
   (S.erro?'<div class="warn">'+e(S.erro)+'</div>':'')+'<button class="b"'+(S.carregando?" disabled":"")+'>'+(S.carregando?"Reservando…":"Reservar horário")+'</button></form>'+
-  '<p class="sub" style="margin-top:10px;font-size:13px">O horário fica reservado até a Amanda confirmar pelo WhatsApp.</p><button class="back" data-back>← Trocar horário</button>'}
+  '<p class="sub" style="margin-top:10px;font-size:13px">O horário fica reservado até a Amanda confirmar pelo WhatsApp.</p><p class="priv">🔒 Teu nome, WhatsApp e observação são usados só pra organizar o teu atendimento e ficam guardados com a Amanda. Nada é compartilhado com outras pessoas.</p><button class="back" data-back>← Trocar horário</button>'}
  if(S.p===3){var r=S.res;
   h='<div class="status"><div class="ic">🩷</div><h1 class="t2">Horário <em>reservado!</em></h1><div class="sum"><span>'+e(A.rot(r.itens))+'</span><b>'+A.dt(r.data)+' · '+r.hora+'</b><span><span class="badge pendente">Aguardando a Amanda confirmar</span></span></div>'+
   '<p><b>Último passo:</b> manda o pedido pra Amanda no WhatsApp. A mensagem já vai pronta, é só tocar em enviar.</p>'+
@@ -72,13 +72,13 @@ v.addEventListener("click",function(ev){var t=ev.target.closest("button");if(!t|
  else if(t.hasAttribute("data-retry"))return buscar();
  else if(t.dataset.d)S.dia=t.dataset.d;
  else if(t.dataset.h){S.hora=t.dataset.h;S.p=2;S.erro="";scrollTo(0,0)}
- else if(t.hasAttribute("data-back")){S.erro="";S.p--;if(S.p===1)return buscar()}
+ else if(t.hasAttribute("data-back")){S.erro="";S.p--;S.t0=null;if(S.p===1)return buscar()}
  else return;render()});
 v.addEventListener("submit",function(ev){ev.preventDefault();var f=ev.target;if(S.carregando)return;
- var dados={nome:f.n.value.trim(),tel:f.t.value,obs:f.o.value.trim(),itens:itens(),data:S.dia,hora:S.hora};
+ var dados={nome:f.n.value.trim(),tel:f.t.value,obs:f.o.value.trim(),itens:itens(),data:S.dia,hora:S.hora,hp:f.site.value,ms:Date.now()-(S.t0||Date.now())};
  S.f=dados;if(A.dig(dados.tel).length<10){S.erro="Confere o WhatsApp com DDD, por favor.";return render()}
  S.carregando=true;S.erro="";render();
- A.api("pedir",dados).then(function(r){S.carregando=false;S.res=Object.assign({},dados,{tel:A.dig(dados.tel),cod:r.cod,id:r.id});S.p=3;render();scrollTo(0,0)})
+ A.api("pedir",dados).then(function(r){S.carregando=false;S.res=Object.assign({},dados,{tel:A.dig(dados.tel),cod:r.cod,id:r.id});delete S.res.hp;delete S.res.ms;S.t0=null;S.p=3;render();scrollTo(0,0)})
  .catch(function(err){S.carregando=false;S.erro=err.message;render()})});
 render();
 })();
