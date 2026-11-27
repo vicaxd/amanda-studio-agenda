@@ -4,7 +4,7 @@
   var CFG = window.AGENDA || {};
   var TEC = {
     cilios: ["Volume brasileiro", "Volume brasileiro marrom", "Fox eyes", "Fox eyes 5D", "Fox eyes marrom", "Sirena", "Efeito wispy", "Volume 6D", "Volume 8D", "Volume russo", "Efeito molhado", "Efeito molhado castanho"],
-    sobrancelhas: ["Design", "Design masculino", "Design com henna", "Design com tintura", "Brow lamination", "Micropigmentação"]
+    sobrancelhas: ["Design clássico", "Design masculino", "Design com henna", "Design com tintura", "Brow lamination", "Micropigmentação"]
   };
   var DN = ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"], DS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"], MN = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
