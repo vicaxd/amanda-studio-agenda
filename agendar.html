@@ -19,7 +19,7 @@
 <script src="js/agenda.js"></script>
 <script>
 (function(){
-var A=Agenda,D=document,v=D.getElementById("v"),DUR={col:120,man:105,sob:45};
+var A=Agenda,D=document,v=D.getElementById("v"),DUR={col:120,man:105,sob:45},DTEC={"Micropigmentação":105,"Brow lamination":90};
 var S={p:0,cil:null,ct:null,sob:null,dias:null,dia:null,hora:null,carregando:false,erro:"",res:null};
 D.getElementById("wadir").href=A.wa(A.CFG.WHATS,"Oi, Amanda! Vim pelo teu site 🩷");
 if(A.demo)D.getElementById("demo").innerHTML='<div class="demo">🧪 <b>Modo demonstração:</b> os horários são de exemplo e nada é enviado de verdade.</div>';
@@ -27,7 +27,7 @@ if(A.demo)D.getElementById("demo").innerHTML='<div class="demo">🧪 <b>Modo dem
 var q=new URLSearchParams(location.search).get("tec");
 if(q){if(A.TEC.cilios.indexOf(q)>=0)S.cil=q;else if(A.TEC.sobrancelhas.indexOf(q)>=0)S.sob=q}
 function itens(){var a=[];if(S.cil&&S.ct)a.push({tec:S.cil,tipo:S.ct});if(S.sob)a.push({tec:S.sob,tipo:"sob"});return a}
-function min(){return itens().reduce(function(t,i){return t+DUR[i.tipo]},0)}
+function min(){return itens().reduce(function(t,i){return t+(DTEC[i.tec]||DUR[i.tipo])},0)}
 function passos(){D.querySelectorAll(".steps i").forEach(function(x,k){x.classList.toggle("on",k<=S.p)})}
 function e(s){return A.esc(s)}
 function render(){passos();var h="";

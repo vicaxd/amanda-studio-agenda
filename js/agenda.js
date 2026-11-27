@@ -50,7 +50,7 @@
   function wa(numero, texto) { return "https://api.whatsapp.com/send?phone=" + numero + "&text=" + encodeURIComponent(texto); }
 
   /* ---------- MODO DEMONSTRAÇÃO ---------- */
-  var DUR = { col: 120, man: 105, sob: 45 }, ABRE = 540, FECHA = 1080, PASSO = 30, DIAS = [2, 3, 4, 5, 6], JAN = 21;
+  var DUR = { col: 120, man: 105, sob: 45 }, DTEC = { "Micropigmentação": 105, "Brow lamination": 90 }, ABRE = 540, FECHA = 1080, PASSO = 30, DIAS = [2, 3, 4, 5, 6], JAN = 21;
   function store() { try { return JSON.parse(localStorage.getItem("amandaDemo")) || null; } catch (e) { return null; } }
   function save(s) { try { localStorage.setItem("amandaDemo", JSON.stringify(s)); } catch (e) {} }
   function dias() { var out = [], h = new Date(); h.setHours(0, 0, 0, 0); for (var i = 1; i <= JAN; i++) { var d = new Date(h); d.setDate(h.getDate() + i); out.push(d); } return out; }
@@ -118,10 +118,10 @@
         try {
           var a = r.acao, out;
           if (a.indexOf("admin.") === 0 && r.senha !== "demo" && r.token !== "demo") { var e = new Error("Senha incorreta (no modo demonstração a senha é: demo)"); e.auth = false; throw e; }
-          if (a === "config") out = { duracoes: DUR };
-          else if (a === "horarios") out = { dias: livres(s, (r.itens || []).reduce(function (t, i) { return t + DUR[i.tipo]; }, 0)) };
+          if (a === "config") out = { duracoes: DUR, duracaoTecnica: DTEC };
+          else if (a === "horarios") out = { dias: livres(s, (r.itens || []).reduce(function (t, i) { return t + (DTEC[i.tec] || DUR[i.tipo]); }, 0)) };
           else if (a === "pedir") {
-            var min = r.itens.reduce(function (t, i) { return t + DUR[i.tipo]; }, 0);
+            var min = r.itens.reduce(function (t, i) { return t + (DTEC[i.tec] || DUR[i.tipo]); }, 0);
             var d = livres(s, min).find(function (x) { return x.data === r.data; });
             if (!d || d.horarios.indexOf(r.hora) < 0) throw new Error("Esse horário acabou de ser ocupado. Escolha outro, por favor.");
             var p = { id: Math.random().toString(36).slice(2, 8), status: "pendente", nome: r.nome, tel: dig(r.tel), cod: String(1000 + Math.floor(Math.random() * 9000)), itens: r.itens, min: min, data: r.data, hora: r.hora, obs: r.obs || "" };
